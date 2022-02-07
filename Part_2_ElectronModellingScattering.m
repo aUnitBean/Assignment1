@@ -19,10 +19,10 @@ tau = 0.2 * 10 ^(-12);
 lambda = 3.74 * 10 ^(-8);
 
 %Time Step
-delta_t = tau/2;
+delta_t = tau/100;
 
 %Number of Particles
-num_part = 1000;
+num_part = 10;
 
 %Silicon Dimensions
 length_silicon = 200; %in nm
@@ -43,13 +43,14 @@ v_rand = v_Th/3 * randn(num_part,1) + v_Th;  %random velocities from normal dist
 part.velocity(:,1) = cos(part.phi) .* v_rand;
 part.velocity(:,2) = sin(part.phi) .* v_rand;
 
-% velocities = sqrt(part.velocity(:,1).^2+part.velocity(:,2).^2);
-% hist (velocities);
-% VelocityTitle = sprintf('Histogram for Velocities of Electrons in Silicon,  Mean: %d m/s', mean(velocities));
-% 
-% title(VelocityTitle)
-% ylabel('Occurence')
-% xlabel('Velocity (m/s)')
+velocities = sqrt(part.velocity(:,1).^2+part.velocity(:,2).^2);
+hist (velocities);
+VelocityTitle = sprintf('Histogram for Velocities of Electrons in Silicon,  Mean: %d m/s', mean(velocities));
+
+title(VelocityTitle)
+ylabel('Occurence')
+xlabel('Velocity (m/s)')
+
 
 
 all_x_positions = zeros(num_part, num_steps);
@@ -77,7 +78,6 @@ for i = 1:num_steps
 
 %     
     %This is the live plot
-%     hold on
 %     scatter(part.position(:,1),part.position(:,2),'.', 'b');
 %      myTitle = sprintf('Electron Trajectories in Silicon, with Impurities, Temperature: %d k', T);
 %     title(myTitle)
@@ -134,30 +134,30 @@ end
     
     mean_temp= mean(temperatures);
 
+    figure
 
-
-%     scatter(1:num_steps,temperatures,'.');
-%     Temperature_title = sprintf('Temperature of Silicon, Mean Temperature: %d', mean_temp);
-%     title(Temperature_title)
-%     ylabel('Temperature (Kelvin)')
-%     xlabel('Steps')
-%     hold on
-%     scatter(1:num_steps, mean_temp, 'r', '_')
+    scatter(1:num_steps,temperatures,'.');
+    Temperature_title = sprintf('Temperature of Silicon, Mean Temperature: %d', mean_temp);
+    title(Temperature_title)
+    ylabel('Temperature (Kelvin)')
+    xlabel('Steps')
+    hold on
+    scatter(1:num_steps, mean_temp, 'r', '_')
 
 
     %Every particle gets its own colour
     colours = jet(num_part);
     
     %This plots the linear trajectories of all the particles
-%     figure
-%     for m =1:num_part
-%     scatter(all_x_positions(m,:),all_y_positions(m,:),'.', 'color', colours(m))
-%     hold on
-%     end
-%     allTrajTitle = sprintf("Trajectories of Electrons, with Impurities, Mean Collision Time: %d" ,mean_collision_time)
-%     title(allTrajTitle)
-%     axis([0 length_silicon 0 width_silicon])
-%     ylabel('y, (nm)')
-%     xlabel('x, (nm)')
+    figure
+    for m =1:num_part
+    scatter(all_x_positions(m,:),all_y_positions(m,:),'.', 'color', colours(m))
+    hold on
+    end
+    allTrajTitle = sprintf("Trajectories of Electrons, with Impurities, Mean Collision Time: %d" ,mean_collision_time)
+    title(allTrajTitle)
+    axis([0 length_silicon 0 width_silicon])
+    ylabel('y, (nm)')
+    xlabel('x, (nm)')
 
 

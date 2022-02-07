@@ -1,3 +1,5 @@
+
+%Sarah Dolan, 2022, ELEC 4700
 set(0, 'DefaultFigureWindowStyle', 'docked')
 close all
 
@@ -14,12 +16,12 @@ C.k = 1.381 * 10 ^ (-23);
 
 %Thermal velocity, mean time between collisions,
 %Mean free path
-v_Th = sqrt(2*C.k*T/C.mn);
+v_Th = sqrt(2*C.k*T/C.mn)/10^-9; %Converted to nm/s
 tau = 0.2 * 10 ^(-12);
 lambda = 3.74 * 10 ^(-8);
 
 %Time Step
-delta_t = 1 * 10^-5;
+delta_t = tau/4;
 
 %Number of Particles
 num_part = 10;
@@ -59,13 +61,13 @@ for i = 1:num_steps
     xlabel('Steps')
     hold on
 %   This is the live plot
-%     scatter(part.position(:,1),part.position(:,2),'.', 'b');
-%     myTitle = sprintf('Electron Trajectories in Silicon, no Impurities, Temperature: %d k', T);
-%     title(myTitle)
-%     ylabel('y, (nm)')
-%     xlabel('x, (nm)')
-%     axis([0 length_silicon 0 width_silicon])
-%     pause(0.01)
+    scatter(part.position(:,1),part.position(:,2),'.', 'b');
+    myTitle = sprintf('Electron Trajectories in Silicon, no Impurities, Temperature: %d k', T);
+    title(myTitle)
+    ylabel('y, (nm)')
+    xlabel('x, (nm)')
+    axis([0 length_silicon 0 width_silicon])
+    pause(0.01)
  
     %Position Updates
     part.position = part.position + part.velocity * delta_t;

@@ -22,7 +22,7 @@ lambda = 3.74 * 10 ^(-8);
 delta_t = tau/100;
 
 %Number of Particles
-num_part = 50;
+num_part = 50000;
 
 %Silicon Dimensions
 length_silicon = 200; %in nm
@@ -121,23 +121,23 @@ for i = 1:num_steps
     %Checking Boundary Conditions and scattering
     
     for n = 1:num_part
-%         my_position_y = round(part.position(n,2));
-%         if my_position_y <= 0
-%             my_position_y = 1;
-%         end
-%         if my_position_y >100
-%             my_position_y = 100;
-%         end
-%         my_position_x = round(part.position(n,1));
-%         if my_position_x <= 0
-%             my_position_x = 1;
-%         end
-%         if my_position_x > 200
-%             my_position_x = 200;
-%         end
-%     v_tot_square = (part.velocity(n,1).^2 + part.velocity(n,2).^2);
-%     KE_part = (1/2) * C.mn * v_tot_square;
-%     temperature_map (my_position_y, my_position_x) = temperature_map (my_position_y, my_position_x)+KE_part / C.k;
+        my_position_y = round(part.position(n,2));
+        if my_position_y <= 0
+            my_position_y = 1;
+        end
+        if my_position_y >100
+            my_position_y = 100;
+        end
+        my_position_x = round(part.position(n,1));
+        if my_position_x <= 0
+            my_position_x = 1;
+        end
+        if my_position_x > 200
+            my_position_x = 200;
+        end
+    v_tot_square = (part.velocity(n,1).^2 + part.velocity(n,2).^2);
+    KE_part = (1/2) * C.mn * v_tot_square;
+    temperature_map (my_position_y, my_position_x) = temperature_map (my_position_y, my_position_x)+KE_part / C.k;
 
 
     %Scattering
@@ -216,7 +216,7 @@ end
     end
 
     figure
-    electron_density = silicon/ (length_silicon*width_silicon);
+    electron_density = silicon/(length_silicon*width_silicon);
      surf(electron_density);
      title('Electron Density')
     ylabel('y (nm)')
@@ -239,18 +239,11 @@ end
 
 
     
-
-     mean_collision_time = duration/mean(part.collisions);
+% 
+%     mean_collision_time = duration/mean(part.collisions);
 %     mean_free_path = mean_collision_time * v_Th
 %     mean_temp= mean(temperatures);
 
-%     scatter(1:num_steps,temperatures,'.');
-%     Temperature_title = sprintf('Temperature of Silicon, Mean Temperature: %d', mean_temp);
-%     title(Temperature_title)
-%     ylabel('Temperature (Kelvin)')
-%     xlabel('Steps')
-%     hold on
-%     scatter(1:num_steps, mean_temp, 'r', '_')
 
 
     %Every particle gets its own colour

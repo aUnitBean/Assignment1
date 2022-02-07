@@ -2,7 +2,7 @@ set(0, 'DefaultFigureWindowStyle', 'docked')
 close all
 
 %Duration of simulation
-num_steps = 8000;
+num_steps = 10000;
 
 %Silicon Temperature
 T = 300;
@@ -22,7 +22,7 @@ lambda = 3.74 * 10 ^(-8);
 delta_t = tau/100;
 
 %Number of Particles
-num_part = 100;
+num_part = 10;
 
 %Silicon Dimensions
 length_silicon = 200; %in nm
@@ -43,15 +43,6 @@ Circle{1}.y = Circle{1}.radius* sin(circle_angle)'+Circle{1}.centre(2);
 radius_x = 0;
 radius_y = 0;
 
-
-% %Boxes!
-% num_boxes = 2;
-% Boxes = {};
-% Box{1}.x =[80 120];
-% Box{1}.y =[0 40];
-% 
-% Box{2}.x =[80 120];
-% Box{2}.y =[60 100];
 
 %Are box boundaries diffusive?
 diffusive = 1;
@@ -118,23 +109,23 @@ for i = 1:num_steps
     for n = 1:num_part
 
     %Scattering
-        P_scat = 1-exp(-(delta_time_step*delta_t+delta_t)/tau);
-        delta_time_step = delta_time_step + 1;
-      
-        if (P_scat > rand())
-            delta_time_step = 0; %reset time step
-            %velocity reassigned
-            new_random_velocity = v_Th/3 * randn(1,1) + v_Th; 
-            part.phi(n) = 2*pi* rand(); 
-            part.velocity(n,1) = cos(part.phi(n)) * new_random_velocity;
-            part.velocity(n,2) = sin(part.phi(n)) * new_random_velocity;
-        end
+%         P_scat = 1-exp(-(delta_time_step*delta_t+delta_t)/tau);
+%         delta_time_step = delta_time_step + 1;
+%       
+%         if (P_scat > rand())
+%             delta_time_step = 0; %reset time step
+%             %velocity reassigned
+%             new_random_velocity = v_Th/3 * randn(1,1) + v_Th; 
+%             part.phi(n) = 2*pi* rand(); 
+%             part.velocity(n,1) = cos(part.phi(n)) * new_random_velocity;
+%             part.velocity(n,2) = sin(part.phi(n)) * new_random_velocity;
+%         end
           %circles!
           
           
           
           [in_circ, on_circ] =  inpolygon(part.position(n,1), part.position(n,2), Circle{1}.x, Circle{1}.y);
-          
+        
           if in_circ|| on_circ
           radius_x =  Circle{1}.centre(1)-part.position(n,1);
           radius_y =  Circle{1}.centre(2)-part.position(n,2) ;
@@ -145,11 +136,10 @@ for i = 1:num_steps
                in_circ =  inpolygon(part.position(n,1), part.position(n,2), Circle{1}.x, Circle{1}.y);
           end
           
-                part.phi(n) = phi_circ -2*(part.phi(n)-phi_circ);
-                part.velocity(n,1) = part.velocity(n,1)*cos(part.phi(n));
-                part.velocity(n,2) = part.velocity(n,1)*sin(part.phi(n));
+                part.phi(n) = part.phi(n) +(pi-2*phi_circ);
+                part.velocity(n,1) = sqrt(part.velocity(n,2)^2+ part.velocity(n,1)^2)*cos(part.phi(n));
+                part.velocity(n,2) = sqrt(part.velocity(n,2)^2+ part.velocity(n,1)^2)*sin(part.phi(n));
           end
-
 
 
         if  part.position(n, 1) > length_silicon || part.position(n, 1) < 0
@@ -161,8 +151,8 @@ for i = 1:num_steps
         end
         if  part.position(n, 2) >= width_silicon || part.position(n, 2) <= 0 
             part.position (n,:) = part.position(n,:) - part.velocity(n,:) * delta_t;
-            part.phi(n) = part.phi(n)+pi();
-            part.velocity(n,2) = part.velocity(n,1)*sin(part.phi(n));
+            part.phi(n) = part.phi(n)+pi;
+            part.velocity(n,2) = sqrt(part.velocity(n,2)^2+ part.velocity(n,1)^2)*sin(part.phi(n));
         end
     end
        
@@ -186,6 +176,8 @@ end
     end
 
     plot(Circle{1}.x,Circle{1}.y);
+
+    scatter(Circle{1}.centre(1),Circle{1}.centre(2));
  
      
     allTrajTitle = sprintf('Trajectories of Electrons, Circular Box');
